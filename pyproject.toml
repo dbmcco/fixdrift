@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fixdrift"
+version = "0.1.0"
+description = "Workgraph sidecar to enforce root-cause fix quality and reduce patch-on-patch churn"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "speedrift-lane-sdk",
+]
+
+[project.scripts]
+fixdrift = "fixdrift.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fixdrift*"]
+
+[tool.uv.sources]
+speedrift-lane-sdk = { path = "../speedrift-lane-sdk", editable = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
