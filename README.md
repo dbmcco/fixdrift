@@ -54,3 +54,31 @@ Standalone:
 Exit codes:
 - `0`: clean
 - `3`: findings exist (advisory)
+
+## Agent Guidance
+
+This section is for AI agents (Claude Code, Codex, Amplifier) working in Speedrift-managed repos.
+
+### When This Lane Runs
+
+`fixdrift` runs automatically when a task description contains a `fixdrift` TOML block (bug-fix tasks). It is also triggered by `driftdriver` during factory cycles and attractor loop passes.
+
+### Per-Task Workflow
+
+1. Add a `fixdrift` fence to bug-fix tasks to ensure reproduction notes, root-cause analysis, and regression test evidence
+2. Run drift checks at task start and before completion:
+   ```bash
+   ./.workgraph/drifts check --task <id> --write-log --create-followups
+   ```
+3. Drift is advisory — never hard-block the current task
+4. If findings appear, prefer follow-up tasks over scope expansion
+
+### Key Rules
+
+- Exit code `0` = clean, `3` = findings exist (advisory)
+- Follow-up tasks are deduped and capped at 3 per lane per repo
+- Do not suppress findings — let driftdriver manage significance scoring
+- fixdrift flags patches that lack durable evidence (repro notes, root cause, regression tests)
+- Always document reproduction steps before fixing
+- Regression tests should be committed alongside the fix
+- Do not close fix follow-ups without evidence artifacts
